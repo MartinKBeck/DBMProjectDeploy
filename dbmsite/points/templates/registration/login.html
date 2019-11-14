@@ -1,0 +1,16 @@
+<html>
+<a href = "{% url 'index' %}">Home</a> 
+<a href = "{% url 'login' %}">Login</a>
+<a href = "{% url 'register' %}">Register</a>
+<br>
+<p> This is the login page </p>
+
+<form method='POST'>
+	{% csrf_token %}
+	Username:<br>
+		<input type="text" name="username"><br>
+	Password:<br>
+		<input type="text" name="password"><br>
+	<input type="submit" value="Submit"/>
+</form>
+</html> 
