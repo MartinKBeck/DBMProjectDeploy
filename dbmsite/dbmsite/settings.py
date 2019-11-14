@@ -79,17 +79,33 @@ WSGI_APPLICATION = 'dbmsite.wsgi.application'
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
+import pymysql
+pymysql.install_as_MySQLdb()
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dbmproject',
-        'USER': 'ginamartin@msitm',
-        'PASSWORD': 'msitm2019!',
-        'HOST': 'msitm.mysql.database.azure.com',
-        'PORT': '',
-    },
-}
+if os.getenv('GAE_APPLICATION', None):
+    # Running on production App Engine
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'mydb',
+            'USER': 'admin',
+            'PASSWORD': 'admin',
+            'HOST': '/cloudsql/dbm-project-257422:us-central1:dbm-projected-db',
+            'PORT': '',
+        },
+    }
+else:
+    # Running locally to connect
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'mydb',
+            'USER': 'admin',
+            'PASSWORD': 'admin',
+            'HOST': '127.0.0.1',
+            'PORT': '3306',
+        },
+    }
 
 
 # Password validation
@@ -129,3 +145,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT= 'static'

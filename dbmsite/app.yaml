@@ -1,0 +1,23 @@
+runtime: python37
+
+# [START handlers]
+#handlers:
+#- url: /
+#  script: sharedkitchen.app
+
+#- url: /bootstrap
+#  static_dir: bootstrap
+
+#- url: /.*
+#  script: sharedkitchen.app
+# [END handlers]
+
+entrypoint: gunicorn -b:8080 dbmsite.wsgi
+
+# [START python37 cloudsql config]
+env_variables:
+  CLOUD_SQL_USERNAME: admin
+  CLOUD_SQL_PASSWORD: admin
+  CLOUD_SQL_DATABASE_NAME: mydb
+  CLOUD_SQL_CONNECTION_NAME: dbm-project-257422:us-central1:dbm-projected-db
+# [END python37 cloudsql config]
