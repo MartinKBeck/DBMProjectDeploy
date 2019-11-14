@@ -79,8 +79,6 @@ WSGI_APPLICATION = 'dbmsite.wsgi.application'
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
-import pymysql
-pymysql.install_as_MySQLdb()
 
 if os.getenv('GAE_APPLICATION', None):
     # Running on production App Engine
