@@ -1,33 +1,34 @@
 from django.db import models
 
 class Users(models.Model):
-	userId = models.AutoField(primary_key=True)
+	user_id = models.AutoField(primary_key=True)
 	username = models.CharField(max_length=30, unique=True)
 	password = models.CharField(max_length=30) 
 	# Deal with hashing later
-	received = models.IntegerField()
-	givenBucket = models.IntegerField()
+	admin = models.BooleanField()
+	points_left = models.IntegerField()
+	points_received = models.IntegerField()
 
 class PointTransactions(models.Model):
-	transactionId = models.AutoField(primary_key=True)
-	transactionDate = models.DateTimeField(auto_now_add=True)
-	userGiver = models.ForeignKey(Users, related_name='givingUser', on_delete=models.CASCADE)
-	userReceiver = models.ForeignKey(Users, related_name='receivingUser', on_delete=models.CASCADE)
-	pointAmount = models.IntegerField()
+	transaction_id = models.AutoField(primary_key=True)
+	sender_id = models.ForeignKey(Users, related_name='sendingUser', on_delete=models.CASCADE)
+	recipient_id = models.ForeignKey(Users, related_name='receivingUser', on_delete=models.CASCADE)
+	sent_amount = models.IntegerField()
+	transaction_date = models.DateTimeField(auto_now_add=True)
 	message = models.CharField(max_length = 40)
 
-class Admin(models.Model):
-	adminId = models.AutoField(primary_key=True)
-	username = models.CharField(max_length=30, unique=True)
-	password = models.CharField(max_length=30)
-	# Deal with hashing later
+class RedeemTransactions(models.Model):
+	transaction_id = models.AutoField(primary_key=True)
+	user_id = models.ForeignKey(Users, on_delete=models.CASCADE)
+	points_redeemed = models.IntegerField()
+	transaction_date = models.DateTimeField(auto_now_add=True, null=True)
 	def __str__(self):
-		return self.admin_text
+		return self.redeemtransactions_text
 
-class GiftTransaction(models.Model):
-	giftTransactionId = models.AutoField(primary_key=True)
-	transactionDate = models.DateTimeField(auto_now_add=True, null=True)
-	userId = models.ForeignKey(Users, on_delete=models.CASCADE)
-	amountDeducting = models.IntegerField()
-	def __str__(self):
-		return self.gifttransactions_text
+# class Admin(models.Model):
+# 	adminId = models.AutoField(primary_key=True)
+# 	username = models.CharField(max_length=30, unique=True)
+# 	password = models.CharField(max_length=30)
+# 	# Deal with hashing later
+# 	def __str__(self):
+# 		return self.admin_text

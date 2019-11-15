@@ -35,8 +35,8 @@ def send_points(request):
 		if (Users.objects.filter(username=sender).exists()):
 
 			if (Users.objects.filter(username=receiver).exists()):
-				senderId = Users.objects.filter(username=sender).values_list('userId')[0][0]
-				receiverId = Users.objects.filter(username=receiver).values_list('userId')[0][0]
+				senderId = Users.objects.filter(username=sender).values_list('user_id')[0][0]
+				receiverId = Users.objects.filter(username=receiver).values_list('user_id')[0][0]
 
 				amount = int(request.POST.get('amount'))
 				message = request.POST.get('message')
@@ -47,13 +47,13 @@ def send_points(request):
 				# buckettest = senderIdentity.givenBucket
 				# receivertest = receiverIdentity.received
 
-				senderIdentity.givenBucket = senderIdentity.givenBucket - amount
+				senderIdentity.points_left = senderIdentity.points_left - amount
 				senderIdentity.save()
 
-				receiverIdentity.received = receiverIdentity.received + amount
+				receiverIdentity.points_received = receiverIdentity.points_received + amount
 				receiverIdentity.save()
 
-				newTransaction = PointTransactions.objects.create(userGiver = senderIdentity, userReceiver = receiverIdentity, pointAmount = amount, message = message)
+				newTransaction = PointTransactions.objects.create(sender_id = senderIdentity, recipient_id = receiverIdentity, sent_amount = amount, message = message)
 
 		return render(request,'points/hub.html')
 	else:
