@@ -1,17 +1,5 @@
 runtime: python37
 
-# [START handlers]
-#handlers:
-#- url: /
-#  script: sharedkitchen.app
-
-#- url: /bootstrap
-#  static_dir: bootstrap
-
-#- url: /.*
-#  script: sharedkitchen.app
-# [END handlers]
-
 entrypoint: gunicorn -b:8080 dbmsite.wsgi
 
 # [START python37 cloudsql config]
