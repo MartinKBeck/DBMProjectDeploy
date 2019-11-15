@@ -11,6 +11,7 @@ urlpatterns = [
 	path('success/', Success.as_view(), name='success'),
 	path('login/', views.user_login, name = 'login'),
 	path('hub/', UserHub.as_view(), name='hub'),
+	path('send/', views.send_points, name='send'),
 	path('register/', Register.as_view(), name='register'),
 	
 ]

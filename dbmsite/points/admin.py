@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from.models import TestTransactions, GiftTransaction, Users
+from.models import PointTransactions, GiftTransaction, Users
 
 # Register your models here.
 
 # Registering multiple models
-myModels = [Users, TestTransactions, GiftTransaction]
+myModels = [Users, PointTransactions, GiftTransaction]
 admin.site.register(myModels)
 

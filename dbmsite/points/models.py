@@ -7,23 +7,14 @@ class Users(models.Model):
 	# Deal with hashing later
 	received = models.IntegerField()
 	givenBucket = models.IntegerField()
-	def __str__(self):
-		return self.users_text
 
-# class PointTransactions(models.Model):
-# 	transactionId = models.AutoField(primary_key=True)
-# 	userGiver = models.ForeignKey(Users, on_delete=models.CASCADE)
-# 	userReceiver = models.ForeignKey(Users, on_delete=models.CASCADE)
-# 	pointAmount = models.IntegerField()
-
-class Test(models.Model):
-	testid = models.AutoField(primary_key=True)
-
-class TestTransactions(models.Model):
-	testerId = models.AutoField(primary_key=True)
-	usertest = models.CharField(max_length=30, unique=True)
-	def __str__(self):
-		return self.testtransactions_text
+class PointTransactions(models.Model):
+	transactionId = models.AutoField(primary_key=True)
+	transactionDate = models.DateTimeField(auto_now_add=True)
+	userGiver = models.ForeignKey(Users, related_name='givingUser', on_delete=models.CASCADE)
+	userReceiver = models.ForeignKey(Users, related_name='receivingUser', on_delete=models.CASCADE)
+	pointAmount = models.IntegerField()
+	message = models.CharField(max_length = 40)
 
 class Admin(models.Model):
 	adminId = models.AutoField(primary_key=True)
@@ -35,6 +26,7 @@ class Admin(models.Model):
 
 class GiftTransaction(models.Model):
 	giftTransactionId = models.AutoField(primary_key=True)
+	transactionDate = models.DateTimeField(auto_now_add=True, null=True)
 	userId = models.ForeignKey(Users, on_delete=models.CASCADE)
 	amountDeducting = models.IntegerField()
 	def __str__(self):

@@ -1,0 +1,21 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<br>
+<p1> This is Send.html </p>
+
+<form method='POST'>
+	{% csrf_token %}
+	Sender:<br>
+		<input type="text" name="sender"><br>
+	Receiver:<br>
+		<input type="text" name="receiver"><br>
+	Amount:<br>
+		<input type="text" name="amount"><br>
+	Message:<br>
+		<input type="text" name="message"><br><br>
+	<input type="submit" value="Submit"/>
+</form>
+
+{% endblock %}
