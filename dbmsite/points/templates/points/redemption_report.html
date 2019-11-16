@@ -5,7 +5,23 @@
 <h3>Current Time and Date:</h3><p2>
 {% now "jS F Y H:i" %}
 </p2><br><br>
+{% for redemption in data %}
+<h1>{{ redemption.points_redeemed }}</h1>
+{% endfor %}
 
+	<table>
+	<tr>
+		<th>Points Redeemed</th>
+		<th>User ID</th>
+	</tr>
+
+	{% for redemption in data %}
+	<tr>
+		<td>{{ redemption.points_redeemed }}</td>
+		<td>{{ redemption.user_id }}</td>
+	</tr>
+	{% endfor %}
+</table>
 
 
 {% endblock %}

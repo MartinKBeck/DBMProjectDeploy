@@ -3,6 +3,7 @@ from django.shortcuts import render
 from points.models import Users, PointTransactions, RedeemTransactions, Admin
 import hashlib
 from django.db import connection
+from django.template.response import TemplateResponse
 
 # Create your views here.
 class Index(TemplateView):
@@ -189,7 +190,7 @@ def redemption_report(request):
 	if request.method == 'POST':
 		data = RedeemTransactions.objects.all()
 
-		return render(request, 'points/redemption_report.html', {'data': data})
+		return TemplateResponse(request, 'points/redemption_report.html', {'data': data})
 
 	else:
 		return render(request, 'points/redemption_report.html')
