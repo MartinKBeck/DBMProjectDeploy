@@ -1,5 +1,23 @@
-<a href = "{% url 'login' %}">Login</a>
-<br>
+<head>
+	<title>{% block title %}Points{% endblock %}</title>
+	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
+<body>
+
+		<ul>
+			<li><a href="/">Logout</a>
+			<li><a href="/login">Login</a>
+			<li><a href="/send">Gift Points</a>
+			<li><a href="/redeem">Redeem Points</a>
+			<li><a href="/userhistory">Points History</a>
+
+			{% if admin == 1 %}
+			<li><a href="/reset">Reset Points</a>
+			{% endif %}
+			<li><a href="/hub">Home</a>
+
+		</ul>
+	</nav>
 
 {% block content %}
 {% endblock %}

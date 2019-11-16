@@ -1,7 +1,16 @@
-<a href = "{% url 'hub' %}">Hub</a>
+{% extends "layout.html" %}
+{% load static %}
+{% block content %}
+<head>
+	<h1> Points History </h1>
+</head>
 
-<p>This is user_history.html</p>
+<p1>Which history would you like to see?</p1>
+<br>
+<br>
 
 <input type = 'submit' name = 'button_1' value = 'Points Received' method='POST'>
 
 <input type = 'submit' name = 'button_2' value = 'Points Given'>
+
+{% endblock %}
