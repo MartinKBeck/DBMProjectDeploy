@@ -1,13 +1,19 @@
+{% extends "layout.html" %}
+{ % load static %}
+{% block content %}
 <html>
-<br>
-<p> This is the login page </p>
+<head>
+	<h1> Login </h1>
+</head>
 
 <form method='POST'>
 	{% csrf_token %}
 	Username:<br>
-		<input type="text" name="username"><br>
+		<input type="text" name="username"><br><br>
 	Password:<br>
 		<input type="text" name="password"><br><br>
 	<input type="submit" value="Submit"/>
 </form>
 </html> 
+
+{% endblock %}

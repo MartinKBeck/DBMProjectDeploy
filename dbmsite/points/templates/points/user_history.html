@@ -1,7 +1,11 @@
-<a href = "{% url 'hub' %}">Hub</a>
+{% extends "layout.html" %}
+{% load static %}
+{% block content %}
+<head>
+	<h1> Points History </h1>
+</head>
 
-<p>This is user_history.html</p>
-<p>Choose whether you'd like to see your points received history or points given history.</p>
+<p1>Which history would you like to see?</p1>
 
 <form method='POST'>
 	{% csrf_token %}
@@ -12,3 +16,5 @@
   <br><br>
   <input type="submit">
 </form>
+
+{% endblock %}

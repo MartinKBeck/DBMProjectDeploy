@@ -1,14 +1,23 @@
-<a href = "{% url 'hub' %}">Hub</a><br>
+{% extends "layout.html" %}
+{% load static %}
+{% block content %}
+<head>
+	<h1> Reset Points </h1>
+	
+</head>
 
+<p2>
 {% if message %}
 {{message}}
+</p2>
+
 <br>
 <br>
 {% endif %}
-
-
 
 <form method='POST'>
 	{% csrf_token %}
 	<input type="submit" value="Reset Month"/>
 </form>
+
+{% endblock %}

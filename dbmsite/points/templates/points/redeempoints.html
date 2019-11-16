@@ -1,13 +1,16 @@
 {% extends "layout.html" %}
-
+{% load static %}
 {% block content %}
-<a href = "{% url 'hub' %}">Hub</a>
-<br>
+<head>
+	<h1> Redeem Points </h1>
+	
+</head>
 
-<p1> This is Redeem.html </p>
-
+<p2>
 {% if message %}
 {{message}}
+</p2>
+
 <br>
 <br>
 {% endif %}
@@ -16,8 +19,10 @@
 	{% csrf_token %}
 	Redeemer:<br>
 		<input type="text" name="redeemer"><br>
-	# of Giftcards Redeeming:<br>
+		<br>
+	Number of Giftcards Redeeming:<br>
 		<input type="text" name="giftcardnum"><br>
+		<br>
 	<input type="submit" value="Submit"/>
 </form>
 
