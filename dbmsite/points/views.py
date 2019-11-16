@@ -3,7 +3,7 @@ from django.shortcuts import render
 from points.models import Users, PointTransactions, RedeemTransactions, Admin
 import hashlib
 from django.db import connection
-from django.template.response import TemplateResponse
+from django.db.models import Sum
 
 # Create your views here.
 class Index(TemplateView):
@@ -189,20 +189,22 @@ def reset_points(request):
 	else:
 		return render(request, 'points/reset.html')
 
-def getData(query):
-	with connection.cursor() as cursor:
-		cursor.execute(query)
-		rows = cursor.fetchall()
-		cursor.close()
-		conn.close()
+# def getData(query):
+# 	with connection.cursor() as cursor:
+# 		cursor.execute(query)
+# 		rows = cursor.fetchall()
+# 		cursor.close()
+# 		conn.close()
 		
-		return rows
+# 		return rows
 
 def redemption_report(request):
-	if request.method == 'POST':
-		data = RedeemTransactions.objects.all()
+	# if request.method == 'POST':
+		
+		redemptions = RedeemTransactions.objects.values('user_id', 'transaction_date').annotate(Sum('points_redeemed'), Sum('points_redeemed'))
+		#.values_list('user_id','points_redeemed','transaction_date')
+		print(redemptions)
+		return render(request, 'points/redemption_report.html', {'data': redemptions})
 
-		return TemplateResponse(request, 'points/redemption_report.html', {'data': data})
-
-	else:
-		return render(request, 'points/redemption_report.html')
+	# else:
+	# 	return render(request, 'points/redemption_report.html')
