@@ -1,4 +1,5 @@
 from django.views.generic import TemplateView
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from points.models import Users, PointTransactions, RedeemTransactions, Admin
 import hashlib
@@ -14,30 +15,41 @@ def  user_login(request):
 		username = request.POST.get('username')
 		password = request.POST.get('password')
 
+		# Creation of sessions
+		request.session['username'] = username
+
 		# Hashing function to test against DB
 		password_hash = hashlib.md5(password.encode()).hexdigest()
 
 		# Checking against database
 		if (Users.objects.filter(username=username, password=password_hash).exists()):
-			return render(request, 'points/hub.html', {'admin':0})
+			request.session['admin'] = 0
+			return render(request, 'points/hub.html', {'username':request.session['username'], 'admin': request.session['admin']})
 
 		if (Admin.objects.filter(username=username, password=password_hash).exists()):
-			return render(request, 'points/hub.html', {'admin':1})
+			request.session['admin'] = 1
+			return render(request, 'points/hub.html', {'username':request.session['username'], 'admin': request.session['admin']})
 		else:
-			error = 'Incorrect Login Information'
-			return render(request, 'registration/login.html', {'message':error})
+			return render(request, 'registration/login.html', {'message':'Incorrect Login Information'})
 	else:
 		return render(request, 'registration/login.html')
 
-class UserHub(TemplateView):
-	template_name = 'points/hub.html'
+# Logs user out and resets session
+def user_logout(request):
+	request.session.flush()
+	return HttpResponseRedirect('/login')
+
+def UserHub(request):
+	username = request.session['username']
+	return render(request, 'points/hub.html', {'username': request.session['username'], 'admin': request.session['admin']})
 
 # Send points page
 def send_points(request):
+
 	if request.method == 'POST':
 
 		# If they did not fill in all the fields
-		if (request.POST.get('sender') == "" or request.POST.get('receiver') == "" or request.POST.get('amount')== "" or request.POST.get('message') == ""):
+		if (request.POST.get('receiver') == "" or request.POST.get('amount')== "" or request.POST.get('message') == ""):
 			error = "Please fill in all the fields!"
 			return render(request, 'points/sendpoints.html', {'message':error})
 		
@@ -46,7 +58,7 @@ def send_points(request):
 			# If amount entered is valid
 			if (request.POST.get('amount').isdigit()):
 				# Creation of variables to be used in later sections
-				sender = request.POST.get('sender')
+				sender = request.session['username']
 				receiver = request.POST.get('receiver')
 				amount = int(request.POST.get('amount'))
 				message = request.POST.get('message')
@@ -61,7 +73,7 @@ def send_points(request):
 
 						if(senderIdentity.points_left<amount and senderIdentity.points_left>0):
 							print('Insufficient Funds')
-							return render(request, 'points/sendpoints.html')
+							return render(request, 'points/sendpoints.html', {'admin':request.session['admin']})
 						else:
 							# Finding user_id of each person
 							receiverId = Users.objects.filter(username=receiver).values_list('user_id')[0][0]		
@@ -83,28 +95,28 @@ def send_points(request):
 							confirmation = 'You sent {} points to {}'.format(str(amount),receiver)
 
 							# Return user back to their hub after sending points
-							return render(request, 'points/sendpoints.html', {'message':confirmation})
+							return render(request, 'points/sendpoints.html', {'message':confirmation, 'admin':request.session['admin']})
 				
 					# If user does not exist
 					else:
 						error = "The user you have specified does not exist"
-						return render(request, 'points/sendpoints.html', {'message':error})
+						return render(request, 'points/sendpoints.html', {'message':error, 'admin': request.session['admin']})
 			else:
 				error = "Please enter a valid amount!"
-				return render(request, 'points/sendpoints.html', {'message':error})
+				return render(request, 'points/sendpoints.html', {'message':error, 'admin': request.session['admin']})
 	else:
-		return render(request, 'points/sendpoints.html')
+		return render(request, 'points/sendpoints.html', {'admin':request.session['admin']})
 
 # Page for redeeming points gained
 def redeem_points(request):
 	if request.method == 'POST':
-		if (request.POST.get('redeemer')=="" or request.POST.get('giftcardnum')==""):
-			error = "Please fill in the fields!"
-			return render(request, 'points/redeempoints.html', {'message':error})
+		if (request.POST.get('giftcardnum')==""):
+			error = "Please fill in the amount of gift cards!"
+			return render(request, 'points/redeempoints.html', {'message':error, 'admin':request.session['admin']})
 		else:
 			if request.POST.get('giftcardnum').isdigit():
 				# Setting variables to prep for usage
-				redeemer = request.POST.get('redeemer')
+				redeemer = request.session['username']
 				giftcardnum = int(request.POST.get('giftcardnum'))
 				pointsredeemed = giftcardnum * 10000
 
@@ -119,7 +131,7 @@ def redeem_points(request):
 					# Validating that redeemer has amount of points
 					if redeemerAccount.points_left < pointsredeemed:
 						denial = 'Insufficient points to redeem {} giftcard(s)'.format(giftcardnum)
-						return render(request, 'points/redeempoints.html', {'message':denial})
+						return render(request, 'points/redeempoints.html', {'message':denial, 'admin':request.session['admin']})
 					else:
 						# Points removal and creation of redeemtransactions 
 						newRedeemTransaction = RedeemTransactions.objects.create(user_id=redeemerId, points_redeemed = pointsredeemed)
@@ -129,20 +141,22 @@ def redeem_points(request):
 
 						confirmation = 'You redeemed {} points for ${}'.format(pointsredeemed, pointsredeemed/100)
 
-					return render(request, 'points/redeempoints.html', {'message':confirmation})
+					return render(request, 'points/redeempoints.html', {'message':confirmation, 'admin':request.session['admin']})
 			else:
 				error = "Please enter a valid number!"
-				return render(request, 'points/redeempoints.html', {'message':error})
+				return render(request, 'points/redeempoints.html', {'message':error, 'admin':request.session['admin']})
 	else:
-		return render(request, 'points/redeempoints.html')
+		return render(request, 'points/redeempoints.html', {'admin':request.session['admin']})
 
 def user_history(request):
 	if request.method == 'POST':
 
+		requester = request.session['username']
+
 		# Validate something was passed to form
-		if request.POST.get('requester'):
+		if (Users.objects.filter(username=requester).exists()):
 		# Getting requesters information
-			requester = request.POST.get('requester')
+			
 			requesterId = Users.objects.filter(username=requester).values_list('user_id')[0][0]
 			requesterAccount = Users.objects.get(user_id=requesterId)
 
@@ -158,10 +172,10 @@ def user_history(request):
 					transactionDetail = PointTransactions.objects.filter(recipient = requesterId).values_list('sender','sent_amount','transaction_date','message')
 					# Changing user id to an actual username
 					# Users.objects.filter().values_list('user_id')[0][0]
-					return render(request, 'points/user_history.html', {'points_received':transactionDetail})
+					return render(request, 'points/user_history.html', {'points_received':transactionDetail, 'admin':request.session['admin']})
 				
 				else:
-					return render(request, 'points/user_history.html', {'message': 'No history for receiving points'})
+					return render(request, 'points/user_history.html', {'message': 'No history for receiving points', 'admin':request.session['admin']})
 
 			elif choice == 'points_given':
 
@@ -170,23 +184,26 @@ def user_history(request):
 
 					transactionDetail = PointTransactions.objects.filter(sender = requesterId).values_list('recipient','sent_amount','transaction_date','message')
 
-					return render(request, 'points/user_history.html', {'points_given':transactionDetail})
+					return render(request, 'points/user_history.html', {'points_given':transactionDetail, 'admin':request.session['admin']})
 				else:
-					return render(request, 'points/user_history.html', {'message': 'No history for giving points'})
+					return render(request, 'points/user_history.html', {'message': 'No history for giving points', 'admin':request.session['admin']})
 	else:
-		return render(request, 'points/user_history.html')
+		return render(request, 'points/user_history.html', {'admin':request.session['admin']})
 
 # Creation of button that will reset user history.
 def reset_points(request):
-	if request.method == 'POST':
+	if request.session['admin']==1:
+		if request.method == 'POST':
 
-		Users.objects.all().update(points_left=1000)
+			Users.objects.all().update(points_left=1000)
 
-		confirmation = 'Month reset!'
+			confirmation = 'Month reset!'
 
-		return render(request, 'points/reset.html', {'message':confirmation})
+			return render(request, 'points/reset.html', {'message':confirmation, 'admin':request.session['admin']})
+		else:
+			return render(request, 'points/reset.html', {'admin':request.session['admin']})
 	else:
-		return render(request, 'points/reset.html')
+		return render(request,'points/login.html')
 
 def getData(query):
 	with connection.cursor() as cursor:
