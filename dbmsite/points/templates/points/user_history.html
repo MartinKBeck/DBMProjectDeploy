@@ -1,7 +1,14 @@
 <a href = "{% url 'hub' %}">Hub</a>
 
 <p>This is user_history.html</p>
+<p>Choose whether you'd like to see your points received history or points given history.</p>
 
-<input type = 'submit' name = 'button_1' value = 'Points Received' method='POST'>
-
-<input type = 'submit' name = 'button_2' value = 'Points Given'>
+<form method='POST'>
+	{% csrf_token %}
+  <select name="history_choice">
+    <option value="points_received">Points Received</option>
+    <option value="points_given">Points Given</option>
+  </select>
+  <br><br>
+  <input type="submit">
+</form>

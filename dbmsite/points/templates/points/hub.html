@@ -2,9 +2,12 @@
 
 {% block content %}
 
+{% if admin == 0 %}
 <a href = "{% url 'send' %}">Gift Points</a> 
 <a href = "{% url 'redeem' %}">Redeem Points</a>
 <a href = "{% url 'userhistory' %}">Points History</a>
+{% endif %}
+
 {% if admin == 1 %}
 <a href = "{% url 'reset' %}">Reset Points</a>
 {% endif %}

@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render
-from points.models import Users, PointTransactions, RedeemTransactions
+from points.models import Users, PointTransactions, RedeemTransactions, Admin,
 import hashlib
 
 # Create your views here.
@@ -18,7 +18,9 @@ def  user_login(request):
 
 		# Checking against database
 		if (Users.objects.filter(username=username, password=password_hash).exists()):
-			return render(request, 'points/hub.html',{'admin':1})
+			return render(request, 'points/hub.html', {'admin':0})
+		if (Admin.objects.filter(username=username, password=password_hash).exists()):
+			return render(request, 'points/hub.html', {'admin':1})
 		else:
 			print('Incorrect Credentials')
 			return render(request, 'registration/login.html')
@@ -109,20 +111,21 @@ def redeem_points(request):
 
 def user_history(request):
 	if request.method == 'POST':
+
+		points_received_press = True
+		points_given_press = False
+
+		if points_received_press:
+			return render(request, 'points/user_history.html')
+		elif points_given_press:
+			return render(request, 'points/user_history.html')
+
 		return render(request, 'points/user_history.html')
 	else:
 		return render(request, 'points/user_history.html')
 
 def reset_points(request):
 	if request.method == 'POST':
-
-		points_received_press = True
-		points_given_press = False
-
-		if points_received_press:
-			return render(request, 'points/reset.html')
-		elif points_given_press:
-			return render(request, 'points/reset.html')
 
 		Users.objects.all().update(points_left=1000)
 

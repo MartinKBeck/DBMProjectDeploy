@@ -5,7 +5,6 @@ class Users(models.Model):
 	username = models.CharField(max_length=30, unique=True)
 	password = models.CharField(max_length=40) 
 	# Deal with hashing later
-	admin = models.BooleanField()
 	points_left = models.IntegerField()
 	points_received = models.IntegerField()
 
@@ -25,10 +24,10 @@ class RedeemTransactions(models.Model):
 	def __str__(self):
 		return self.redeemtransactions_text
 
-# class Admin(models.Model):
-# 	adminId = models.AutoField(primary_key=True)
-# 	username = models.CharField(max_length=30, unique=True)
-# 	password = models.CharField(max_length=30)
-# 	# Deal with hashing later
-# 	def __str__(self):
-# 		return self.admin_text
+class Admin(models.Model):
+	adminId = models.AutoField(primary_key=True)
+	username = models.CharField(max_length=30, unique=True)
+	password = models.CharField(max_length=40)
+	# Deal with hashing later
+	def __str__(self):
+		return self.admin_text
