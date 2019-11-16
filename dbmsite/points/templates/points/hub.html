@@ -9,15 +9,4 @@
 
 <p1>What would you like to do?</p1><br><br>
 
-{% if admin == 0 %}
-<a href = "{% url 'send' %}">Gift points</a> <br><br>
-<a href = "{% url 'redeem' %}">Redeem points</a><br><br>
-<a href = "{% url 'userhistory' %}">Look at my point history</a><br><br>
-{% endif %}
-
-{% if admin == 1 %}
-<a href = "{% url 'reset' %}">Reset points</a><br>
-{% endif %}
-
-
 {% endblock %}

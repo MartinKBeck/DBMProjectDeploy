@@ -7,9 +7,12 @@
 		<ul>
 			<li><a href="/">Logout</a>
 			<li><a href="/login">Login</a>
+
+			{% if admin == 0 %}
 			<li><a href="/send">Gift Points</a>
 			<li><a href="/redeem">Redeem Points</a>
 			<li><a href="/userhistory">Points History</a>
+			{% endif %}
 
 			{% if admin == 1 %}
 			<li><a href="/reset">Reset Points</a>

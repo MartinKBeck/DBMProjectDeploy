@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render
-from points.models import Users, PointTransactions, RedeemTransactions, Admin,
+from points.models import Users, PointTransactions, RedeemTransactions, Admin
 import hashlib
 
 # Create your views here.
@@ -19,6 +19,7 @@ def  user_login(request):
 		# Checking against database
 		if (Users.objects.filter(username=username, password=password_hash).exists()):
 			return render(request, 'points/hub.html', {'admin':0})
+
 		if (Admin.objects.filter(username=username, password=password_hash).exists()):
 			return render(request, 'points/hub.html', {'admin':1})
 		else:
@@ -137,18 +138,22 @@ def redeem_points(request):
 def user_history(request):
 	if request.method == 'POST':
 
-		points_received_press = True
-		points_given_press = False
+		# Receive users choice
+		choice = request.POST.get('history_choice')
 
-		if points_received_press:
-			return render(request, 'points/user_history.html')
-		elif points_given_press:
+		# Check users response
+		# Pushing specific queries based on the history type they wanted
+		if choice == 'points_received':
+			points_received_press = True
 			return render(request, 'points/user_history.html')
 
-		return render(request, 'points/user_history.html')
+		elif choice == 'points_given':
+			points_given_press = True
+			return render(request, 'points/user_history.html')
 	else:
 		return render(request, 'points/user_history.html')
 
+# Creation of button that will reset user history.
 def reset_points(request):
 	if request.method == 'POST':
 
