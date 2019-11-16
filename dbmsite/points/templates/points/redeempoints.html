@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<br>
+<p1> This is Redeem.html </p>
+
+<form method='POST'>
+	{% csrf_token %}
+	Redeemer:<br>
+		<input type="text" name="redeemer"><br>
+	# of Giftcards Redeeming:<br>
+		<input type="text" name="giftcardnum"><br>
+	<input type="submit" value="Submit"/>
+</form>
+
+{% endblock %}

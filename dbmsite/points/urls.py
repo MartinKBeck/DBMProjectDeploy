@@ -12,6 +12,7 @@ urlpatterns = [
 	path('login/', views.user_login, name = 'login'),
 	path('hub/', UserHub.as_view(), name='hub'),
 	path('send/', views.send_points, name='send'),
+	path('redeem/', views.redeem_points, name='redeem'),
 	path('register/', Register.as_view(), name='register'),
 	
 ]

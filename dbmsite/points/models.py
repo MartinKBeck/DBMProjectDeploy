@@ -19,7 +19,7 @@ class PointTransactions(models.Model):
 
 class RedeemTransactions(models.Model):
 	transaction_id = models.AutoField(primary_key=True)
-	user_id = models.ForeignKey(Users, on_delete=models.CASCADE)
+	user_id = models.ForeignKey(Users, related_name='redeemUser',on_delete=models.CASCADE)
 	points_redeemed = models.IntegerField()
 	transaction_date = models.DateTimeField(auto_now_add=True, null=True)
 	def __str__(self):
