@@ -23,8 +23,8 @@ def  user_login(request):
 		if (Admin.objects.filter(username=username, password=password_hash).exists()):
 			return render(request, 'points/hub.html', {'admin':1})
 		else:
-			print('Incorrect Credentials')
-			return render(request, 'registration/login.html')
+			error = 'Incorrect Login Information'
+			return render(request, 'registration/login.html', {'message':error})
 	else:
 		return render(request, 'registration/login.html')
 
