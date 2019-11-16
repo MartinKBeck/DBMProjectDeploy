@@ -140,28 +140,40 @@ def redeem_points(request):
 def user_history(request):
 	if request.method == 'POST':
 
+		# Validate something was passed to form
+		if request.POST.get('requester'):
 		# Getting requesters information
-		requester = request.POST.get('requester')
-		requesterId = Users.objects.filter(username=requester).values_list('user_id')[0][0]
-		requesterAccount = Users.objects.get(user_id=requesterId)
+			requester = request.POST.get('requester')
+			requesterId = Users.objects.filter(username=requester).values_list('user_id')[0][0]
+			requesterAccount = Users.objects.get(user_id=requesterId)
 
-		# Receive users choice
-		choice = request.POST.get('history_choice')
+			# Receive users choice
+			choice = request.POST.get('history_choice')
 
-		# Check users response
-		# Pushing specific queries based on the history type they wanted
-		if choice == 'points_received':
-			points_received_press = True
+			# Check users response
+			# Pushing specific queries based on the history type they wanted
+			if choice == 'points_received':
 
-			transactionDetail = PointTransactions.objects.filter(recipient = requesterId).values_list('sender','sent_amount','transaction_date','message')
+				# Check that the user has history for receiving points
+				if PointTransactions.objects.filter(recipient = requesterId).exists():
+					transactionDetail = PointTransactions.objects.filter(recipient = requesterId).values_list('sender','sent_amount','transaction_date','message')
+					# Changing user id to an actual username
+					# Users.objects.filter().values_list('user_id')[0][0]
+					return render(request, 'points/user_history.html', {'points_received':transactionDetail})
+				
+				else:
+					return render(request, 'points/user_history.html', {'message': 'No history for receiving points'})
 
-			
+			elif choice == 'points_given':
 
-			return render(request, 'points/user_history.html')
+				# Check that user has history for giving points
+				if PointTransactions.objects.filter(sender = requesterId).exists():
 
-		elif choice == 'points_given':
-			points_given_press = True
-			return render(request, 'points/user_history.html')
+					transactionDetail = PointTransactions.objects.filter(sender = requesterId).values_list('recipient','sent_amount','transaction_date','message')
+
+					return render(request, 'points/user_history.html', {'points_given':transactionDetail})
+				else:
+					return render(request, 'points/user_history.html', {'message': 'No history for giving points'})
 	else:
 		return render(request, 'points/user_history.html')
 

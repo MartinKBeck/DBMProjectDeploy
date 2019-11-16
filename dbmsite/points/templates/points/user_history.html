@@ -21,4 +21,45 @@
   <input type="submit">
 </form>
 
+{% if points_received %}
+	<table style = "width:100%">
+		<tr>
+			<th>Sender</th>
+			<th>Amount</th>
+			<th>Transaction Timestamp</th>
+			<th>Message</th>
+		</tr>
+		{% for history in points_received %}
+		<tr>
+			<td>{{history.0}}</td>
+			<td>{{history.1}}</td>
+			<td>{{history.2}}</td>
+			<td>{{history.3}}</td>
+		</tr>
+		{% endfor %}
+	</table>
+
+{% endif %}
+
+{% if points_given %}
+	<table style = "width:100%">
+		<tr>
+			<th>Receiver</th>
+			<th>Amount</th>
+			<th>Transaction Timestamp</th>
+			<th>Message</th>
+		</tr>
+		{% for history in points_given %}
+		<tr>
+			<td>{{history.0}}</td>
+			<td>{{history.1}}</td>
+			<td>{{history.2}}</td>
+			<td>{{history.3}}</td>
+		</tr>
+		{% endfor %}
+	</table>
+{% endif %}
+
+{{message}}
+
 {% endblock %}
