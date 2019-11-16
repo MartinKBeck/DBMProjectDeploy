@@ -151,8 +151,9 @@ def user_history(request):
 		if choice == 'points_received':
 			points_received_press = True
 
-			transactionDetail = PointTransactions.objects.filter(recipient = requesterId).values_list('sender','sent_amount','transaction_date','message'):
-				print(item)
+			transactionDetail = PointTransactions.objects.filter(recipient = requesterId).values_list('sender','sent_amount','transaction_date','message')
+
+			
 
 			return render(request, 'points/user_history.html')
 
