@@ -6,12 +6,6 @@ import hashlib
 # Create your views here.
 class Index(TemplateView):
 	template_name = 'points/index.html'
-	
-class Register(TemplateView):
-	template_name = 'registration/register.html'
-
-class Success(TemplateView):
-	template_name = 'points/success.html'
 
 def  user_login(request):
 	if request.method == 'POST':
@@ -24,7 +18,7 @@ def  user_login(request):
 
 		# Checking against database
 		if (Users.objects.filter(username=username, password=password_hash).exists()):
-			return render(request, 'points/hub.html')
+			return render(request, 'points/hub.html',{'admin':1})
 		else:
 			print('Incorrect Credentials')
 			return render(request, 'registration/login.html')
@@ -49,21 +43,21 @@ def send_points(request):
 			# User checking for receiver existence
 			if (Users.objects.filter(username=receiver).exists()):
 				# Check that user has enough points
+				senderId = Users.objects.filter(username=sender).values_list('user_id')[0][0]
 				senderIdentity = Users.objects.get(user_id=senderId)
 
-				if(senderIdentity.points_left<amount):
+				if(senderIdentity.points_left<amount and senderIdentity.points_left>0):
 					print('Insufficient Funds')
 					return render(request, 'points/sendpoints.html')
 				else:
 					# Finding user_id of each person
-					senderId = Users.objects.filter(username=sender).values_list('user_id')[0][0]
 					receiverId = Users.objects.filter(username=receiver).values_list('user_id')[0][0]		
 
 					# Pulling the Users object of each party
 					receiverIdentity = Users.objects.get(user_id=receiverId)
 
 					# Creation of new row in point transactions table
-					newTransaction = PointTransactions.objects.create(sender_id = senderIdentity, recipient_id = receiverIdentity, sent_amount = amount, message = message)
+					newTransaction = PointTransactions.objects.create(sender_id = senderId, recipient_id = receiverId, sent_amount = amount, message = message)
 
 					# Generating point amounts and updating DB
 					senderIdentity.points_left = senderIdentity.points_left - amount
@@ -73,8 +67,10 @@ def send_points(request):
 					receiverIdentity.points_received = receiverIdentity.points_received + amount
 					receiverIdentity.save()
 
+					confirmation = 'You sent {} points to {}'.format(str(amount),receiver)
+
 					# Return user back to their hub after sending points
-					return render(request, 'points/hub.html')
+					return render(request, 'points/sendpoints.html', {'message':confirmation})
 	else:
 		return render(request, 'points/sendpoints.html')
 
@@ -88,7 +84,7 @@ def redeem_points(request):
 		pointsredeemed = giftcardnum * 10000
 
 		# Check that person exists in database currently
-		if (Users.objects.filter(username=sender).exists()):
+		if (Users.objects.filter(username=redeemer).exists()):
 
 			# Getting userid and setting userclass to a variable
 			redeemerId = Users.objects.filter(username=redeemer).values_list('user_id')[0][0]
@@ -96,15 +92,42 @@ def redeem_points(request):
 
 			# Validating that redeemer has amount of points
 			if redeemerAccount.points_left < pointsredeemed:
-				print('Insufficient Funds')
-				return render(request, 'points/redeempoints.html')
+				denial = 'Insufficient points to redeem {} giftcards'.format(giftcardnum)
+				return render(request, 'points/redeempoints.html', {'message':denial})
 			else:
 				# Points removal and creation of redeemtransactions 
-				newRedeemTransaction = RedeemTransactions.objects.create(user_id=redeemerAccount, points_redeemed = pointsredeemed)
+				newRedeemTransaction = RedeemTransactions.objects.create(user_id=redeemerId, points_redeemed = pointsredeemed)
 
 				redeemerAccount.points_left = redeemerAccount.points_left - pointsredeemed
 				redeemerAccount.save()
 
-			return render(request, 'points/hub.html')
+				confirmation = 'You redeemed {} points for ${}'.format(pointsredeemed, pointsredeemed/100)
+
+			return render(request, 'points/redeempoints.html', {'message':confirmation})
 	else:
 		return render(request, 'points/redeempoints.html')
+
+def user_history(request):
+	if request.method == 'POST':
+		return render(request, 'points/user_history.html')
+	else:
+		return render(request, 'points/user_history.html')
+
+def reset_points(request):
+	if request.method == 'POST':
+
+		points_received_press = True
+		points_given_press = False
+
+		if points_received_press:
+			return render(request, 'points/reset.html')
+		elif points_given_press:
+			return render(request, 'points/reset.html')
+
+		Users.objects.all().update(points_left=1000)
+
+		confirmation = 'Month reset!'
+
+		return render(request, 'points/reset.html', {'message':confirmation})
+	else:
+		return render(request, 'points/reset.html')

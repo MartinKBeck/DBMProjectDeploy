@@ -4,6 +4,11 @@
 
 <a href = "{% url 'send' %}">Gift Points</a> 
 <a href = "{% url 'redeem' %}">Redeem Points</a>
+<a href = "{% url 'userhistory' %}">Points History</a>
+{% if admin == 1 %}
+<a href = "{% url 'reset' %}">Reset Points</a>
+{% endif %}
+
 
 <p>This is the hub page</p>
 {% endblock %}

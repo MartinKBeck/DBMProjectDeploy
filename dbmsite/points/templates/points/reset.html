@@ -1,0 +1,14 @@
+<a href = "{% url 'hub' %}">Hub</a><br>
+
+{% if message %}
+{{message}}
+<br>
+<br>
+{% endif %}
+
+
+
+<form method='POST'>
+	{% csrf_token %}
+	<input type="submit" value="Reset Month"/>
+</form>

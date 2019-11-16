@@ -1,8 +1,16 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<a href = "{% url 'hub' %}">Hub</a>
 <br>
+
 <p1> This is Redeem.html </p>
+
+{% if message %}
+{{message}}
+<br>
+<br>
+{% endif %}
 
 <form method='POST'>
 	{% csrf_token %}

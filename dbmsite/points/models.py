@@ -11,15 +11,15 @@ class Users(models.Model):
 
 class PointTransactions(models.Model):
 	transaction_id = models.AutoField(primary_key=True)
-	sender_id = models.ForeignKey(Users, related_name='sendingUser', on_delete=models.CASCADE)
-	recipient_id = models.ForeignKey(Users, related_name='receivingUser', on_delete=models.CASCADE)
+	sender = models.ForeignKey(Users, related_name='sendingUser', on_delete=models.CASCADE)
+	recipient = models.ForeignKey(Users, related_name='receivingUser', on_delete=models.CASCADE)
 	sent_amount = models.IntegerField()
 	transaction_date = models.DateTimeField(auto_now_add=True)
 	message = models.CharField(max_length = 40)
 
 class RedeemTransactions(models.Model):
 	transaction_id = models.AutoField(primary_key=True)
-	user_id = models.ForeignKey(Users, related_name='redeemUser',on_delete=models.CASCADE)
+	user = models.ForeignKey(Users, related_name='redeemUser',on_delete=models.CASCADE)
 	points_redeemed = models.IntegerField()
 	transaction_date = models.DateTimeField(auto_now_add=True, null=True)
 	def __str__(self):
