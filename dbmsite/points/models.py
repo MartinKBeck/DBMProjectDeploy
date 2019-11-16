@@ -4,7 +4,6 @@ class Users(models.Model):
 	user_id = models.AutoField(primary_key=True)
 	username = models.CharField(max_length=30, unique=True)
 	password = models.CharField(max_length=40) 
-	# Deal with hashing later
 	points_left = models.IntegerField()
 	points_received = models.IntegerField()
 
@@ -28,6 +27,5 @@ class Admin(models.Model):
 	adminId = models.AutoField(primary_key=True)
 	username = models.CharField(max_length=30, unique=True)
 	password = models.CharField(max_length=40)
-	# Deal with hashing later
 	def __str__(self):
 		return self.admin_text

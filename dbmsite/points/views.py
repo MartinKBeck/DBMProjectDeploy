@@ -138,6 +138,11 @@ def redeem_points(request):
 def user_history(request):
 	if request.method == 'POST':
 
+		# Getting requesters information
+		requester = request.POST.get('requester')
+		requesterId = Users.objects.filter(username=requester).values_list('user_id')[0][0]
+		requesterAccount = Users.objects.get(user_id=requesterId)
+
 		# Receive users choice
 		choice = request.POST.get('history_choice')
 
@@ -145,6 +150,10 @@ def user_history(request):
 		# Pushing specific queries based on the history type they wanted
 		if choice == 'points_received':
 			points_received_press = True
+
+			transactionDetail = PointTransactions.objects.filter(recipient = requesterId).values_list('sender','sent_amount','transaction_date','message'):
+				print(item)
+
 			return render(request, 'points/user_history.html')
 
 		elif choice == 'points_given':
