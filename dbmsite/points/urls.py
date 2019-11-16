@@ -14,4 +14,5 @@ urlpatterns = [
 	path('redeem/', views.redeem_points, name='redeem'),
 	path('userhistory/', views.user_history, name='userhistory'),
 	path('reset/', views.reset_points, name='reset'),
+	path('redemptionReport/', views.redemption_report, name='redmeptionReport'),
 ]
