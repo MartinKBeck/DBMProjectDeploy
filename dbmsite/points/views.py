@@ -3,11 +3,12 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from points.models import Users, PointTransactions, RedeemTransactions, Admin
 import hashlib
+import pandas as pd
+from itertools import chain
 from django.db import connection
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from datetime import date
 from django.db.models.functions import Extract, ExtractMonth
-from django.db.models import Q
 
 # Create your views here.
 class Index(TemplateView):
@@ -213,19 +214,33 @@ def reset_points(request):
 
 
 def redemption_report(request):
-	# if request.method == 'POST':
 		today = date.today()
-		print(today.month)
 		
-		# Query to show all redemptions, by month by user, for the previous two months
-		redemptions = RedeemTransactions.objects.filter(transaction_date__month__gte = (today.month - 2)).values('user_id', month=Extract('transaction_date','month')).annotate(Sum('points_redeemed'), Sum('points_redeemed'))
-		
+		# Query to show the aggregate usage of points on a monthly basis
+
+		# Query set for aggregate sent points on monthly basis by user
+		points_given_agg = pd.DataFrame(PointTransactions.objects.all().values('sender',month=ExtractMonth('transaction_date')).annotate(Sum('sent_amount')), columns=['month','sender','sent_amount__sum'])
+		points_given_agg.columns = ['month','user','Points Given']
+
+		# Query set for aggregate received points on monthly basis by user
+		points_received_agg = pd.DataFrame(PointTransactions.objects.all().values('recipient',month=ExtractMonth('transaction_date')).annotate(Sum('sent_amount')), columns=['month','recipient','sent_amount__sum'])
+		points_received_agg.columns = ['month','user','Points Received']
+
+		# Merging first two queries
+		second_df = pd.merge(points_given_agg, points_received_agg, how='outer', left_on=['month','user'], right_on=['month','user'])
+
+		# Query set for aggregate redeemed points on motnhly basis by user
+		points_redeemed_agg = pd.DataFrame(RedeemTransactions.objects.all().values('user', month=ExtractMonth('transaction_date')).annotate(Sum('points_redeemed')),columns=['month','user','points_redeemed__sum'])
+		points_received_agg.columns = ['month','user','Points Redeemed']
+
+		# Merging last two queries
+		final_df = pd.merge(second_df, points_redeemed_agg, how='outer', left_on=['month','user'], right_on=['month','user']).sort_values(by=['month','Points Received'],ascending=False)
+		aggregate_data = [tuple(x) for x in final_df.values.tolist()]
+
 		# Query to show who isn’t giving out all of their points for the current recent month only 
 		leftover_users = Users.objects.filter(~Q(points_left = 0)).values_list('user_id', 'username', 'points_left')
 
-		# Query to show the aggregate usage of points on a monthly basis 
+		# Query to show all redemptions, by month by user, for the previous two months
+		redemptions = RedeemTransactions.objects.filter(transaction_date__month__gte = (today.month - 2)).values('user_id', month=Extract('transaction_date','month')).annotate(Sum('points_redeemed')).order_by('-month')
 
-		return render(request, 'points/redemption_report.html', {'data': redemptions, 'leftover_users': leftover_users})
-
-	# else:
-	# 	return render(request, 'points/redemption_report.html')
+		return render(request, 'points/redemption_report.html', {'aggregate_data': aggregate_data, 'leftover_users': leftover_users,'data': redemptions, 'admin': request.session['admin']})

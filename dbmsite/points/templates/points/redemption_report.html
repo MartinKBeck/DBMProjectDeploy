@@ -113,10 +113,29 @@ a:active {
 </p2><br><br>
 
 <h1>Aggregate Usage of Points Monthly  Report</h1>
-
+{% if aggregate_data %}
+<table style = "width:30%">
+    <tr>
+      <th>Transaction Month</th>
+      <th>User Id</th>
+      <th>Points Given</th>
+      <th>Points Received</th>
+      <th>Points Redeemed</th>
+    </tr>
+    {% for row in aggregate_data %}
+    <tr>
+      <td>{{row.0}}</td>
+      <td>{{row.1}}</td>
+      <td>{{row.2}}</td>
+      <td>{{row.3}}</td>
+      <td>{{row.4}}</td>      
+    </tr>
+    {% endfor %}
+  </table>
+{% endif %}
 
 <h1>Users With Leftover Points Report</h1>
-{% if data %}
+{% if leftover_users %}
 	<table style = "width:30%">
 		<tr>
 			<th>User Id</th>
