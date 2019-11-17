@@ -6,6 +6,27 @@
 {% now "jS F Y H:i" %}
 </p2><br><br>
 
+<h1>Users With Leftover Points Report</h1>
+{% if data %}
+	<table style = "width:30%">
+		<tr>
+			<th>User Id</th>
+			<th>Username</th>
+			<th>Points Left</th>
+		</tr>
+		{% for user in leftover_users %}
+		<tr>
+			<td>{{user.0}}</td>
+			<td>{{user.1}}</td>
+			<td>{{user.2}}</td>
+			
+		</tr>
+		{% endfor %}
+	</table>
+{% endif %}
+
+
+
 <h1>Redemption Report</h1>
 {% if data %}
 	<table style = "width:30%">

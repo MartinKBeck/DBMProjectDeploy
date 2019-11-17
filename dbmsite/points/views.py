@@ -7,6 +7,7 @@ from django.db import connection
 from django.db.models import Sum
 from datetime import date
 from django.db.models.functions import Extract, ExtractMonth
+from django.db.models import Q
 
 # Create your views here.
 class Index(TemplateView):
@@ -208,14 +209,6 @@ def reset_points(request):
 	else:
 		return render(request,'points/login.html')
 
-# def getData(query):
-# 	with connection.cursor() as cursor:
-# 		cursor.execute(query)
-# 		rows = cursor.fetchall()
-# 		cursor.close()
-# 		conn.close()
-		
-# 		return rows
 
 def redemption_report(request):
 	# if request.method == 'POST':
@@ -225,7 +218,10 @@ def redemption_report(request):
 		redemptions = RedeemTransactions.objects.filter(transaction_date__month__gte = (today.month - 2)).values('user_id', month=Extract('transaction_date','month')).annotate(Sum('points_redeemed'), Sum('points_redeemed'))
 		#.values_list('user_id','points_redeemed','transaction_date')
 		print(redemptions)
-		return render(request, 'points/redemption_report.html', {'data': redemptions})
+
+		leftover_users = Users.objects.filter(~Q(points_left = 0)).values_list('user_id', 'username', 'points_left')
+		print(leftover_users)
+		return render(request, 'points/redemption_report.html', {'data': redemptions, 'leftover_users': leftover_users})
 
 	# else:
 	# 	return render(request, 'points/redemption_report.html')
