@@ -220,8 +220,8 @@ def redemption_report(request):
 		
 		# Query to show who isn’t giving out all of their points for the current recent month only 
 		leftover_users = Users.objects.filter(~Q(points_left = 0)).values_list('user_id', 'username', 'points_left')
-		print(leftover_users)
 
+		# Query to show the aggregate usage of points on a monthly basis 
 
 		return render(request, 'points/redemption_report.html', {'data': redemptions, 'leftover_users': leftover_users})
 
