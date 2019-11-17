@@ -5,6 +5,8 @@ from points.models import Users, PointTransactions, RedeemTransactions, Admin
 import hashlib
 from django.db import connection
 from django.db.models import Sum
+from datetime import date
+from django.db.models.functions import Extract, ExtractMonth
 
 # Create your views here.
 class Index(TemplateView):
@@ -217,8 +219,10 @@ def reset_points(request):
 
 def redemption_report(request):
 	# if request.method == 'POST':
-		
-		redemptions = RedeemTransactions.objects.values('user_id', 'transaction_date').annotate(Sum('points_redeemed'), Sum('points_redeemed'))
+		today = date.today()
+		print(today.month)
+		#redemptions = RedeemTransactions.objects.filter(transaction_date__gte = date.today())
+		redemptions = RedeemTransactions.objects.filter(transaction_date__month__gte = (today.month - 2)).values('user_id', month=Extract('transaction_date','month')).annotate(Sum('points_redeemed'), Sum('points_redeemed'))
 		#.values_list('user_id','points_redeemed','transaction_date')
 		print(redemptions)
 		return render(request, 'points/redemption_report.html', {'data': redemptions})

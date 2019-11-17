@@ -6,18 +6,20 @@
 {% now "jS F Y H:i" %}
 </p2><br><br>
 
+<h1>Redemption Report</h1>
 {% if data %}
-	<table style = "width:100%">
+	<table style = "width:30%">
 		<tr>
+			<th>Transaction Month</th>
 			<th>User Id</th>
 			<th>Points Redeemed</th>
-			<th>Transaction Date</th>
 		</tr>
 		{% for redemption in data %}
 		<tr>
+			<td>{{redemption.month}}</td>
 			<td>{{redemption.user_id}}</td>
 			<td>{{redemption.points_redeemed__sum}}</td>
-			<td>{{redemption.transaction_date}}</td>
+			
 		</tr>
 		{% endfor %}
 	</table>
