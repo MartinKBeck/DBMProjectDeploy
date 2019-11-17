@@ -2,6 +2,112 @@
 { % load static %}
 {% block content %}
 
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+h1 {
+  color:dimgray;
+  font-family: verdana;
+
+}
+h3 {
+  color:dimgray;
+  font-family: verdana
+}
+
+th, td{
+  font-family: verdana
+}
+
+text, p1 {
+  font-family: verdana;
+}
+
+p2 {
+  font-family: verdana;
+  color:hotpink;
+}
+
+form {
+  font-family: verdana;
+  color:black;
+}
+
+.pagetitle {
+    color: #800080;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: skyblue;
+  font-family: verdana;
+
+}
+
+li {
+  float: right;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+  background-color: dimgray;
+}
+
+nav ul li:first-child { float: left; }
+
+input[type="submit"]{
+  background: skyblue;
+  border: none;
+  color: white;
+  padding: 10px 22px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  font-family: verdana;
+  border-radius: 4px;
+}
+
+a:link {
+  text-decoration: none;
+  font-family: verdana;
+  color: dimgray;
+}
+
+a:hover {
+  color: skyblue;
+}
+
+a:visited {
+  text-decoration: none;
+  font-family: verdana;
+}
+a:active {
+  color: skyblue;
+}
+
+</style>
+
 <h3>Current Time and Date:</h3><p2>
 {% now "jS F Y H:i" %}
 </p2><br><br>
@@ -29,6 +135,7 @@
 {% endif %}
 
 <h1>Redemption Report</h1>
+</head>
 {% if data %}
 	<table style = "width:30%">
 		<tr>

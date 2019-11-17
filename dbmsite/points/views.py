@@ -53,7 +53,7 @@ def send_points(request):
 	if request.method == 'POST':
 
 		# If they did not fill in all the fields
-		if (request.POST.get('receiver') == "" or request.POST.get('amount')== "" or request.POST.get('message') == ""):
+		if (request.POST.get('receiver') == "" or request.POST.get('amount')== ""):
 			error = "Please fill in all the fields!"
 			return render(request, 'points/sendpoints.html', {'message':error})
 		
@@ -79,6 +79,8 @@ def send_points(request):
 							print('Insufficient Funds')
 							return render(request, 'points/sendpoints.html', {'admin':request.session['admin']})
 						else:
+							if (request.POST.get('message') == ""):
+								message = ""
 							# Finding user_id of each person
 							receiverId = Users.objects.filter(username=receiver).values_list('user_id')[0][0]		
 

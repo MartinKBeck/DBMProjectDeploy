@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
 ]
 
 MIDDLEWARE = [
@@ -147,5 +148,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 #STATIC_ROOT= 'static'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'statics'),
+    #'C:/Users/Jeeyoung/Documents/MSITM/Fall2019/DatabaseManagement/Project/DBMProjectDeploy/dbmsite/points/static',
 ]

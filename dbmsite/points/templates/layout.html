@@ -1,6 +1,8 @@
+{% load staticfiles %}
 <head>
 	<title>{% block title %}Points{% endblock %}</title>
-	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+	<link href="{% static 'css/style.css' %}" rel="stylesheet" >
+	<!-- type="text/css" -->
 </head>
 <body>
 
