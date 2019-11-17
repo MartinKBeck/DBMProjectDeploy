@@ -115,7 +115,11 @@ a:active {
 
 <p1>What would you like to do?</p1><br><br>
 
-</html>
+{% if points_left %}
+<p1>Points left for Gifting: {{points_left}}</p1>
 
+<p1>Points Accumulated: {{points_accumulated}}
+</html>
+{% endif %}
 
 {% endblock %}

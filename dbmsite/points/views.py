@@ -29,7 +29,8 @@ def  user_login(request):
 		# Checking against database
 		if (Users.objects.filter(username=username, password=password_hash).exists()):
 			request.session['admin'] = 0
-			return render(request, 'points/hub.html', {'username':request.session['username'], 'admin': request.session['admin']})
+			# return render(request, 'points/hub.html', {'username':request.session['username'], 'admin': request.session['admin']})
+			return HttpResponseRedirect('/hub')
 
 		if (Admin.objects.filter(username=username, password=password_hash).exists()):
 			request.session['admin'] = 1
@@ -46,7 +47,14 @@ def user_logout(request):
 
 def UserHub(request):
 	username = request.session['username']
-	return render(request, 'points/hub.html', {'username': request.session['username'], 'admin': request.session['admin']})
+
+	if (Users.objects.filter(username=username).exists()):
+		current_user = Users.objects.filter(username=username).values_list('points_left','points_received')
+
+		points_left = current_user[0][0]
+		points_accumulated = current_user[0][1]
+
+	return render(request, 'points/hub.html', {'username': request.session['username'], 'admin': request.session['admin'], 'points_left':points_left, 'points_accumulated':points_accumulated})
 
 # Send points page
 def send_points(request):
