@@ -29,12 +29,11 @@ def  user_login(request):
 		# Checking against database
 		if (Users.objects.filter(username=username, password=password_hash).exists()):
 			request.session['admin'] = 0
-			# return render(request, 'points/hub.html', {'username':request.session['username'], 'admin': request.session['admin']})
 			return HttpResponseRedirect('/hub')
 
 		if (Admin.objects.filter(username=username, password=password_hash).exists()):
 			request.session['admin'] = 1
-			return render(request, 'points/hub.html', {'username':request.session['username'], 'admin': request.session['admin']})
+			return HttpResponseRedirect('/hub')
 		else:
 			return render(request, 'registration/login.html', {'message':'Incorrect Login Information'})
 	else:
