@@ -11,8 +11,8 @@ from datetime import date
 from django.db.models.functions import Extract, ExtractMonth
 
 # Create your views here.
-class Index(TemplateView):
-	template_name = 'points/index.html'
+def Index(request):
+	return HttpResponseRedirect('/login')
 
 def  user_login(request):
 	if request.method == 'POST':
@@ -84,9 +84,8 @@ def send_points(request):
 						senderId = Users.objects.filter(username=sender).values_list('user_id')[0][0]
 						senderIdentity = Users.objects.get(user_id=senderId)
 
-						if(senderIdentity.points_left<amount and senderIdentity.points_left>0):
-							print('Insufficient Funds')
-							return render(request, 'points/sendpoints.html', {'admin':request.session['admin']})
+						if(senderIdentity.points_left - amount <0):
+							return render(request, 'points/sendpoints.html', {'admin':request.session['admin'], 'message':'Insufficient Funds'})
 						else:
 							if (request.POST.get('message') == ""):
 								message = ""
@@ -133,7 +132,7 @@ def redeem_points(request):
 				# Setting variables to prep for usage
 				redeemer = request.session['username']
 				giftcardnum = int(request.POST.get('giftcardnum'))
-				pointsredeemed = giftcardnum * 10000
+				pointsredeemed = giftcardnum * 1000
 
 
 				# Check that person exists in database currently
@@ -144,17 +143,17 @@ def redeem_points(request):
 					redeemerAccount = Users.objects.get(user_id=redeemerId)
 
 					# Validating that redeemer has amount of points
-					if redeemerAccount.points_left < pointsredeemed:
+					if (redeemerAccount.points_received < pointsredeemed):
 						denial = 'Insufficient points to redeem {} giftcard(s)'.format(giftcardnum)
 						return render(request, 'points/redeempoints.html', {'message':denial, 'admin':request.session['admin']})
 					else:
 						# Points removal and creation of redeemtransactions 
 						newRedeemTransaction = RedeemTransactions.objects.create(user_id=redeemerId, points_redeemed = pointsredeemed)
 
-						redeemerAccount.points_left = redeemerAccount.points_left - pointsredeemed
+						redeemerAccount.points_received = redeemerAccount.points_received - pointsredeemed
 						redeemerAccount.save()
 
-						confirmation = 'You redeemed {} points for ${}'.format(pointsredeemed, pointsredeemed/100)
+						confirmation = 'You redeemed {} points for {} giftcard(s)'.format(pointsredeemed, giftcardnum)
 
 					return render(request, 'points/redeempoints.html', {'message':confirmation, 'admin':request.session['admin']})
 			else:
@@ -184,9 +183,8 @@ def user_history(request):
 
 				# Check that the user has history for receiving points
 				if PointTransactions.objects.filter(recipient = requesterId).exists():
-					transactionDetail = PointTransactions.objects.filter(recipient = requesterId).values_list('sender','sent_amount','transaction_date','message')
-					# Changing user id to an actual username
-					# Users.objects.filter().values_list('user_id')[0][0]
+					transactionDetail = PointTransactions.objects.filter(recipient = requesterId).order_by('-transaction_date').values_list('sender','sent_amount','transaction_date','message')
+					
 					return render(request, 'points/user_history.html', {'points_received':transactionDetail, 'admin':request.session['admin']})
 				
 				else:
@@ -197,7 +195,7 @@ def user_history(request):
 				# Check that user has history for giving points
 				if PointTransactions.objects.filter(sender = requesterId).exists():
 
-					transactionDetail = PointTransactions.objects.filter(sender = requesterId).values_list('recipient','sent_amount','transaction_date','message')
+					transactionDetail = PointTransactions.objects.filter(sender = requesterId).order_by('-transaction_date').values_list('recipient','sent_amount','transaction_date','message')
 
 					return render(request, 'points/user_history.html', {'points_given':transactionDetail, 'admin':request.session['admin']})
 				else:

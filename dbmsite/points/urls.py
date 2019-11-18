@@ -1,13 +1,12 @@
 from django.urls import path
 
-from .views import Index
 from points import views
 
 
 # app_name = 'points'
 
 urlpatterns = [
-	path('', Index.as_view(), name='index'),
+	path('', views.Index, name='index'),
 	path('login/', views.user_login, name='login'),
 	path('logout/', views.user_logout, name='logout'),
 	path('hub/', views.UserHub, name='hub'),
