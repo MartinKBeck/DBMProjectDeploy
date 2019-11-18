@@ -53,9 +53,9 @@ def UserHub(request):
 
 		points_left = current_user[0][0]
 		points_accumulated = current_user[0][1]
-
-	return render(request, 'points/hub.html', {'username': request.session['username'], 'admin': request.session['admin'], 'points_left':points_left, 'points_accumulated':points_accumulated})
-
+		return render(request, 'points/hub.html', {'username': request.session['username'], 'admin': request.session['admin'], 'points_left':points_left, 'points_accumulated':points_accumulated})
+	else:
+		return render(request, 'points/hub.html', {'username': request.session['username'], 'admin': request.session['admin']})
 # Send points page
 def send_points(request):
 
