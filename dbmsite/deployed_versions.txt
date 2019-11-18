@@ -6,7 +6,10 @@ Stable version
 11/16/19 5:10pm
 Released with new layout and session information, 
 users have hub, gifting, redeeming, and point history that are fully functional
-
 admin has admin hub, reports being created, and reset points are functional. 
-
 CSS however is not functional
+
+Final Version
+11/17/19 6:25PM
+Finished all functionality. Admin has all reports created and added quality of live improvements for a variety of functions as dictated in github commit history.
+CSS functional however is hardcoded into every html page.
