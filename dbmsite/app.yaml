@@ -4,8 +4,8 @@ entrypoint: gunicorn -b:8080 dbmsite.wsgi
 
 # [START python37 cloudsql config]
 env_variables:
-  CLOUD_SQL_USERNAME: admin
-  CLOUD_SQL_PASSWORD: admin
-  CLOUD_SQL_DATABASE_NAME: mydb
-  CLOUD_SQL_CONNECTION_NAME: dbm-project-257422:us-central1:dbm-projected-db
+  CLOUD_SQL_USERNAME: ####
+  CLOUD_SQL_PASSWORD: ####
+  CLOUD_SQL_DATABASE_NAME: ####
+  CLOUD_SQL_CONNECTION_NAME: ####
 # [END python37 cloudsql config]
