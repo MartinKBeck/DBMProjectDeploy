@@ -88,10 +88,10 @@ if os.getenv('GAE_APPLICATION', None):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'mydb',
-            'USER': 'admin',
-            'PASSWORD': 'admin',
-            'HOST': '/cloudsql/dbm-project-257422:us-central1:dbm-projected-db',
+            'NAME': '<dbname>',
+            'USER': '<dbuser>',
+            'PASSWORD': '<dbpass>',
+            'HOST': '<dbhost>',
             'PORT': '',
         },
     }
